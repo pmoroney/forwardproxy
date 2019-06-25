@@ -273,6 +273,10 @@ func (fp *ForwardProxy) dialContextCheckACL(ctx context.Context, network, hostPo
 		return nil, &ProxyError{S: fmt.Sprintf("Lookup of %s failed: %v", host, err),
 			Code: http.StatusBadGateway}
 	}
+	
+	if len(IPs) == 0 {
+		return nil, &ProxyError{S: "No IPs found when looking up DNS for " + host, Code: http.StatusBadGateway}
+	}
 
 	// This is net.Dial's default behavior: if the host resolves to multiple IP addresses,
 	// Dial will try each IP address in order until one succeeds
